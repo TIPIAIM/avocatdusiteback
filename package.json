@@ -1,0 +1,39 @@
+{
+  "name": "aod-avocat-back",
+  "version": "1.0.0",
+  "description": "Backend pour le projet AOD Avocat",
+  "main": "Serveuraod.js",
+  "scripts": {
+    "start": "node Serveuraod.js",
+    "dev": "nodemon Serveuraod.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "backend",
+    "express",
+    "aod-avocat"
+  ],
+  "author": "Alpha ousmane diallo",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.1.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.16",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
