@@ -16,9 +16,11 @@ const MONGO_URI = process.env.MONGO_URI;
 app.use(cors());
 // Middleware pour parser le JSON / C'est une fonctionnalité essentielle pour construire des API RESTful ou travailler avec des données transmises via JSON.Les données envoyées dans le corps d'une requête (comme dans une requête POST ou PUT) sont souvent en format JSON
 app.use(express.json());
+const frontend = ["https://aod-avocats-scpa.vercel.app"];
+//origin: "http://localhost:5173", // Exemple : Adresse du frontend
 app.use(
   cors({
-    origin: "http://localhost:5173", // Exemple : Adresse du frontend
+    origin: frontend, // Exemple : Adresse du frontend
     methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes HTTP acceptées
     credentials: true, // Inclure les cookies si nécessaire
   })
@@ -66,13 +68,13 @@ app.post(
 );
 app.get("/listecontact", async (req, res) => {
   try {
-    const listecontacts = await AjouterContactBDModel.find({});    // Récupérer la liste des contacts depuis la base de données
-    res.status(200).json(listecontacts);    // Répondre avec un code 200 (succès) et les données
+    const listecontacts = await AjouterContactBDModel.find({}); // Récupérer la liste des contacts depuis la base de données
+    res.status(200).json(listecontacts); // Répondre avec un code 200 (succès) et les données
   } catch (error) {
     console.error("Erreur lors de la récupération des contacts :", error);
-    res.status(500).json({ 
-      message: "Une erreur est survenue lors de la récupération des contacts.", 
-      error: error.message 
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération des contacts.",
+      error: error.message,
     });
   }
 });
