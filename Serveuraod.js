@@ -1,32 +1,21 @@
 const express = require("express");
+const router = express.Router();
 const mongoose = require("mongoose");
 const cors = require("cors");
-
 const { body, validationResult } = require("express-validator");
-
 require("dotenv").config();
+const cookieparser = require("cookie-parser");
 
 const AjouterContactBDModel = require("./Model/Modelcontact");
 
 const app = express();
-const PORT = process.env.PORT || 2026;
+//POUR LA CONNEXION
+const jwt = require("jsonwebtoken");
+
+const PORT = process.env.PORT || 2027;
 const MONGO_URI = process.env.MONGO_URI;
 
-// Middleware
-app.use(cors());
-// Middleware pour parser le JSON / C'est une fonctionnalité essentielle pour construire des API RESTful ou travailler avec des données transmises via JSON.Les données envoyées dans le corps d'une requête (comme dans une requête POST ou PUT) sont souvent en format JSON
-app.use(express.json());
-const frontend = ["https://aod-avocats-scpa.vercel.app"];
-//origin: "http://localhost:5173", // Exemple : Adresse du frontend
-app.use(
-  cors({
-    origin: frontend, // Exemple : Adresse du frontend
-    methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes HTTP acceptées
-    credentials: true, // Inclure les cookies si nécessaire
-  })
-);
-
-// Connexion à MongoDB
+//-------------------------------------- Connexion à MongoDB-------------------------------------------------
 mongoose
   .connect(MONGO_URI)
   .then(() => {
@@ -36,6 +25,41 @@ mongoose
     console.error("Erreur de connexion à a la base de donnée :", error.message);
   });
 
+//______________________________________________________________________________________________________
+
+// Middleware
+app.use(cors());
+// Middleware pour parser le JSON / C'est une fonctionnalité essentielle pour construire des API RESTful ou travailler avec des données transmises via JSON.Les données envoyées dans le corps d'une requête (comme dans une requête POST ou PUT) sont souvent en format JSON
+app.use(express.json());
+app.use(cookieparser());
+
+app.use(
+  cors({
+    //    origin: frontend, // Exemple : Adresse du frontend
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes HTTP acceptées
+    credentials: true, // Inclure les cookies si nécessaire
+  })
+);
+//____________________________________________________________________________________________________
+
+//-----------------------------------------------conexion inscript verif--------------------------------------------------
+
+
+
+
+//Middleware d'authentification ( authenticateToken) est utilisé pour protéger les routes nécessitant une authentification. Il permet de vérifier si l'utilisateur a un token JWT valide avant d'accéder à ces routes.
+// Middleware pour vérifier les utilisateurs connectés
+
+// Route de déconnexion
+
+
+//_________________________________________________________________________________________________________
+
+// Middleware pour échapper les caractères spéciaux "Protection contre les injections SQL  trim().escape() et normalizeEmail() dans les validations"
+function escapeInput(input) {
+  return input.replace(/<\/?[^>]+(>|$)/g, ""); // Échapper les balises HTML
+}
 //envoyé les données de contact------------------------------------------------------
 app.post(
   "/contactenvoye",
@@ -44,12 +68,19 @@ app.post(
       .notEmpty()
       .withMessage("Le message est requis")
       .trim()
-      .escape(),
-    body("nom").notEmpty().withMessage("Le nom est requis").trim().escape(),
+      .escape()
+      .customSanitizer(escapeInput),
+    body("nom")
+      .notEmpty()
+      .withMessage("Le nom est requis")
+      .trim()
+      .escape()
+      .customSanitizer(escapeInput),
     body("email")
       .isEmail()
       .withMessage("Un email valide est requis")
       .normalizeEmail(),
+    body("dateajout"),
   ],
   (req, res) => {
     const errors = validationResult(req);
@@ -78,7 +109,12 @@ app.get("/listecontact", async (req, res) => {
     });
   }
 });
-
+app.delete("/deletecontact/:id", (req, res) => {
+  const id = req.params.id;
+  AjouterContactBDModel.findByIdAndDelete({ _id: id })
+    .then((LesContacts) => res.json(LesContacts))
+    .catch((err) => res.json(err));
+});
 //_________________________________________________________________________________________
 
 // Démarrer le serveur______________________________________________________________________
