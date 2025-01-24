@@ -11,6 +11,7 @@ const AjouterContactBDModel = require("./Model/Modelcontact");
 const app = express();
 //POUR LA CONNEXION
 const jwt = require("jsonwebtoken");
+const AjouterClientBDModel = require("./Model/ModelAjoutclient");
 
 const PORT = process.env.PORT || 2027;
 const MONGO_URI = process.env.MONGO_URI;
@@ -43,16 +44,66 @@ app.use(
 );
 //____________________________________________________________________________________________________
 
-//-----------------------------------------------conexion inscript verif--------------------------------------------------
+//--------------------------Ajouter client--------------------------
 
+app.post("/FClient", async (req, res) => {
+  try {
+    const client = await AjouterClientBDModel.create(req.body);
+    res.status(201).json(client); // Code 201 pour "Created"
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création", error });
+  }
+});
 
+// Récupération de tous les clients
 
+app.get("/FClientl", async (req, res) => {
+  try {
+    const clients = await AjouterClientBDModel.find({}); // Récupérer la liste des contacts depuis la base de données
+    res.status(200).json(clients); // Répondre avec un code 200 (succès) et les données
+  } catch (error) {
+    console.error("Erreur lors de la récupération  :", error);
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération des données.",
+      error: error.message,
+    });
+  }
+});
+//1 procedure de recupere fficher par id 
+app.get("/recupparidclient/:id", (req, res) => {//afficher la liste de nos enregistrement
+  const id = req.params.id
+  AjouterClientBDModel.findById({ _id: id })
+    .then(Client => res.json(Client))
+    .catch(err => res.json(err))
+})//2-pour modifier on ajoute le put 
+app.put("/Metajourlerecuperer/:id", (req, res) => {//afficher la liste de nos enregistrement
+  const id = req.params.id
+  AjouterClientBDModel.findByIdAndUpdate({ _id: id }, {
+    name: req.body.name,
+    adresse: req.body.adresse,
+    dateajout: req.body.dateajout,
+    numero: req.body.numero,
+    naturedaffaire: req.body.naturedaffaire,
+    avocat: req.body.avocat,
+  })
+    .then(Client => res.json(Client))
+    .catch(err => res.json(err))
+})
+
+app.delete("/deleteCl/:id", (req, res) => {
+  const id = req.params.id;
+  AjouterContactBDModel.findByIdAndDelete({ _id: id })
+    .then((LesContacts) => res.json(LesContacts))
+    .catch((err) => res.json(err));
+});
+//_________________________________________________________________________________________
+
+//--------------------------------------------conexion inscript verif--------------------------------------------------
 
 //Middleware d'authentification ( authenticateToken) est utilisé pour protéger les routes nécessitant une authentification. Il permet de vérifier si l'utilisateur a un token JWT valide avant d'accéder à ces routes.
 // Middleware pour vérifier les utilisateurs connectés
 
 // Route de déconnexion
-
 
 //_________________________________________________________________________________________________________
 
