@@ -8,8 +8,6 @@ const AjouterContactSchema = new mongoose.Schema(
       type: String,
       required: [true, "Le nom est obligatoire."],
       trim: true,
-      minlength: [5, "Le nom doit contenir au moins 3 caractères."],
-      maxlength: [30, "Le nom ne peut pas dépasser 30 caractères."],
     },
     email: {
       type: String,
@@ -25,8 +23,6 @@ const AjouterContactSchema = new mongoose.Schema(
       type: String,
       required: [true, "Le message est obligatoire."],
       trim: true,
-      minlength: [10, "Le message doit contenir au moins 10 caractères."],
-      maxlength: [400, "Le message ne peut pas dépasser 500 caractères."],
     },
     dateajout: {
       type: Date,

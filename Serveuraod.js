@@ -34,12 +34,32 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieparser());
 
-app.use(
+{
+  /*app.use(
   cors({
     //    origin: frontend, // Exemple : Adresse du frontend
-    origin: "http://localhost:5173",
+  //  origin: "http://localhost:5173",
+  //  methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes HTTP acceptées
+   // credentials: true, // Inclure les cookies si nécessaire
+  })
+);*/
+}
+const allowedOrigins = [
+  "https://aod-avocats-scpa.vercel.app", // Frontend en production
+  "http://localhost:5173", // Pour le développement local
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes HTTP acceptées
-    credentials: true, // Inclure les cookies si nécessaire
+    credentials: true, // Si vous utilisez des cookies ou des sessions
   })
 );
 //____________________________________________________________________________________________________
@@ -69,26 +89,31 @@ app.get("/FClientl", async (req, res) => {
     });
   }
 });
-//1 procedure de recupere fficher par id 
-app.get("/recupparidclient/:id", (req, res) => {//afficher la liste de nos enregistrement
-  const id = req.params.id
+//1 procedure de recupere fficher par id
+app.get("/recupparidclient/:id", (req, res) => {
+  //afficher la liste de nos enregistrement
+  const id = req.params.id;
   AjouterClientBDModel.findById({ _id: id })
-    .then(Client => res.json(Client))
-    .catch(err => res.json(err))
-})//2-pour modifier on ajoute le put 
-app.put("/Metajourlerecuperer/:id", (req, res) => {//afficher la liste de nos enregistrement
-  const id = req.params.id
-  AjouterClientBDModel.findByIdAndUpdate({ _id: id }, {
-    name: req.body.name,
-    adresse: req.body.adresse,
-    dateajout: req.body.dateajout,
-    numero: req.body.numero,
-    naturedaffaire: req.body.naturedaffaire,
-    avocat: req.body.avocat,
-  })
-    .then(Client => res.json(Client))
-    .catch(err => res.json(err))
-})
+    .then((Client) => res.json(Client))
+    .catch((err) => res.json(err));
+}); //2-pour modifier on ajoute le put
+app.put("/Metajourlerecuperer/:id", (req, res) => {
+  //afficher la liste de nos enregistrement
+  const id = req.params.id;
+  AjouterClientBDModel.findByIdAndUpdate(
+    { _id: id },
+    {
+      name: req.body.name,
+      adresse: req.body.adresse,
+      dateajout: req.body.dateajout,
+      numero: req.body.numero,
+      naturedaffaire: req.body.naturedaffaire,
+      avocat: req.body.avocat,
+    }
+  )
+    .then((Client) => res.json(Client))
+    .catch((err) => res.json(err));
+});
 
 app.delete("/deleteCl/:id", (req, res) => {
   const id = req.params.id;
