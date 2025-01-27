@@ -15,6 +15,8 @@ const AjouterClientBDModel = require("./Model/ModelAjoutclient");
 
 const PORT = process.env.PORT || 2027;
 const MONGO_URI = process.env.MONGO_URI;
+const aod = process.env.aodlc; //mison
+const aodpr = process.env.aodpr; //svpr
 
 //-------------------------------------- Connexion à MongoDB-------------------------------------------------
 mongoose
@@ -45,8 +47,10 @@ app.use(cookieparser());
 );*/
 }
 const allowedOrigins = [
-  "https://aod-avocats-scpa.vercel.app", // Frontend en production
-  "http://localhost:5173", // Pour le développement local
+  // "https://aod-avocats-scpa.vercel.app", // Frontend en production
+  //"http://localhost:5173", // Pour le développement local
+  aod,
+  //aodpr
 ];
 
 app.use(
@@ -115,12 +119,28 @@ app.put("/Metajourlerecuperer/:id", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-app.delete("/deleteCl/:id", (req, res) => {
-  const id = req.params.id;
-  AjouterContactBDModel.findByIdAndDelete({ _id: id })
-    .then((LesContacts) => res.json(LesContacts))
-    .catch((err) => res.json(err));
+app.delete("/deleteCl/:clientId", (req, res) => {
+  const id = req.params.clientId; // Utilisez `clientId` pour correspondre au paramètre défini dans la route
+  AjouterClientBDModel.findByIdAndDelete(id) // Passez directement `id` à la méthode
+    .then((deletedClient) => {
+      if (!deletedClient) {
+        return res.status(404).json({ message: "Client introuvable." });
+      }
+      res
+        .status(200)
+        .json({ message: "Client supprimé avec succès.", deletedClient });
+    })
+    .catch((err) => {
+      console.error("Erreur lors de la suppression :", err);
+      res.status(500).json({
+        message: "Erreur serveur lors de la suppression.",
+        error: err,
+      });
+    });
+
+  console.log(`Requête DELETE reçue pour le client ID : ${id}`);
 });
+
 //_________________________________________________________________________________________
 
 //--------------------------------------------conexion inscript verif--------------------------------------------------
