@@ -33,19 +33,19 @@ mongoose
 // Middleware
 app.use(cors());
 // Middleware pour parser le JSON / C'est une fonctionnalité essentielle pour construire des API RESTful ou travailler avec des données transmises via JSON.Les données envoyées dans le corps d'une requête (comme dans une requête POST ou PUT) sont souvent en format JSON
-app.use(express.json());
-app.use(cookieparser());
+app.use(express.json());//pour les données json
+app.use(cookieparser());//pour les cookies // Middleware pour parser les cookies
 
-{
-  /*app.use(
+{/*
+  app.use(
   cors({
     //    origin: frontend, // Exemple : Adresse du frontend
   //  origin: "http://localhost:5173",
   //  methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes HTTP acceptées
    // credentials: true, // Inclure les cookies si nécessaire
   })
-);*/
-}
+);
+*/}
 const allowedOrigins = [
   // "https://aod-avocats-scpa.vercel.app", // Frontend en production
   //"http://localhost:5173", // Pour le développement local
