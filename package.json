@@ -1,11 +1,11 @@
 {
   "name": "aod-avocat-back",
   "version": "1.0.0",
-  "description": "Backend pour le projet AOD Avocat",
+  "description": "Backend pour le projet AOD ",
   "main": "serveur.js",
   "scripts": {
     "start": "node serveur.js",
-    "dev": "nodemon serveur.js",
+  "dev": "nodemon serveur.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
