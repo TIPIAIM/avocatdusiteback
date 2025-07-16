@@ -14,8 +14,7 @@ const port = process.env.Port || 2025; //port : Pour définir le port du serveur
    logger.info("Clé secrète chargée :", process.env.JWT_SECRET); 
 const allowedOrigins = [
   //Pour définir les domaines autorisés.
-  // "http://example.com", // Remplacez par vos domaines autorisés
-  "http://localhost:5173", // Pour le développement local
+   "http://localhost:5173", // Pour le développement local
   FRONTEND, // Pour le développement local
 ]; //allowedOrigins : Pour définir les domaines autorisés.
 

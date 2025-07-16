@@ -13,8 +13,8 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER || "alphadiaous@gmail.com",
-    pass: process.env.EMAIL_PASS || "yxnnrffwkjgunegk",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -23,22 +23,18 @@ const register = async (req, res) => {
     // ===> 1. Validation des entrées utilisateur <===
     const nameRegex = /^[A-Za-zÀ-ÿ' -]{2,50}$/;
     if (!req.body.name || !nameRegex.test(req.body.name.trim())) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Le nom ne doit contenir que des lettres, espaces ou tirets (pas de caractères spéciaux ou chiffres).",
-        });
+      return res.status(400).json({
+        message:
+          "Le nom ne doit contenir que des lettres, espaces ou tirets (pas de caractères spéciaux ou chiffres).",
+      });
     }
     if (!req.body.email || !validator.isEmail(req.body.email)) {
       return res.status(400).json({ message: "Adresse email invalide." });
     }
     if (!req.body.password || req.body.password.length < 8) {
-      return res
-        .status(400)
-        .json({
-          message: "Le mot de passe doit contenir au moins 8 caractères.",
-        });
+      return res.status(400).json({
+        message: "Le mot de passe doit contenir au moins 8 caractères.",
+      });
     }
     const { name, email, password } = req.body;
 
@@ -84,11 +80,87 @@ const register = async (req, res) => {
 
     // Envoi du mail de vérification
     const mailOptions = {
-      from: process.env.EMAIL_USER || "alphadiaous@gmail.com",
+      from: `"AOD Avocat" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Code de vérification",
-      html: `<p>Voici votre code de vérification : <b>${verificationCode}</b></p>`,
+      subject: "Votre code de vérification - AOD Avocat",
+      html: `
+        <div style="background:#f6f8fb;padding:40px 0;font-family:'Segoe UI',Arial,sans-serif;">
+          <div style="max-width:470px;margin:0 auto;background:#fff;border-radius:18px;box-shadow:0 8px 32px #2e44a124;padding:36px 24px 28px 24px;">
+           
+          <div style="text-align:center;">
+              <img 
+              src="https://res.cloudinary.com/dueu8nf5j/image/upload/v1751718544/aodblanc_mtfnec.avif",
+              alt="AOD Avocat"
+              style="height:62px;margin-bottom:16px;" />
+          </div>
+
+            <h2 style="color:#2e44a1;font-size:1.33em;text-align:center;margin:0 0 14px 0;letter-spacing:0.05em;font-weight:800;">
+              Vérification sécurisée de votre identité ${name ? " " + name : ""},
+            </h2>
+            
+            <p style="color:#4e5b79;margin:0 0 22px 0;">
+              Voici votre code de vérification afin de pouvoir accéder à votre espace sécurisé <b>AOD Avocat</b> :
+            </p>
+            <div style="
+              display:flex;justify-content:center;align-items:center;
+              margin:28px 0 18px 0;
+            ">
+              <span style="
+                background:linear-gradient(90deg,#f1f5ff,#e7eefe);
+                border-radius:12px;
+                font-size:2em;
+                font-weight:700;
+                letter-spacing:9px;
+                color:#2e44a1;
+                padding:17px 36px;
+                border:2.3px dashed #4e6ecc;
+                box-shadow:0 3px 12px #2e44a128;
+                user-select:all;
+              ">
+                ${verificationCode}
+              </span>
+
+            </div>
+            <div style="text-align:center;margin:12px 0 18px 0;">
+              <a href="https://www.aod-avocats.com/confimation-mail" style="
+                display:inline-block;
+                background:#2e44a1;
+                color:#fff;
+                border-radius:7px;
+                font-weight:700;
+                font-size:1.07em;
+                padding:10px 34px;
+                text-decoration:none;
+                letter-spacing:0.04em;
+                box-shadow:0 2px 8px #4e6ecc23;
+                transition:background 0.15s;
+              "
+              onmouseover="this.style.background='#e53935';"
+              onmouseout="this.style.background='#2e44a1';"
+              >Se connecter</a>
+            </div>
+
+            <div style="background:#f6f8fb;border-radius:12px;padding:13px 18px;margin:20px 0 15px 0;display:flex;align-items:flex-start;gap:12px;">
+               <div style="color:#1c2236;font-size:1.01em;">
+                <b>Important :</b> Ce code est personnel, confidentiel, et <span style="color:#e53935;font-weight:700;">valable uniquement 15 minutes</span>.
+                <br />Ne le communiquez à <u>personne</u>, même pas à un membre du cabinet.
+              </div>
+            </div>
+
+            <div style="background:#fff5f5;border-radius:9px;padding:10px 15px 8px 15px;color:#d32f2f;font-size:0.99em;margin-bottom:13px;">
+              <b>Attention :</b> Si vous n’êtes pas à l’origine de cette demande, ignorez ce message ou contactez-nous immédiatement.
+            </div>
+
+            <div style="text-align:center;margin-top:18px;color:#7d8597;font-size:0.96em;">
+              — L’équipe <b>AOD Avocat</b><br/>
+              <a href="https://www.aodavocat.com" style="color:#2e44a1;text-decoration:none;">www.aodavocat.com</a>
+            </div>
+            
+          </div>
+        </div>
+      `,
     };
+
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         logger.error(
@@ -113,7 +185,8 @@ const register = async (req, res) => {
 const getMe = async (req, res) => {
   try {
     const user = await Userc.findById(req.user.id).select("-password -__v");
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur" });
@@ -135,7 +208,8 @@ const updateMe = async (req, res) => {
       new: true,
       select: "-password -__v",
     });
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur" });
@@ -187,20 +261,20 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     // 1️⃣ — Recherche de l'utilisateur
     const user = await Userc.findOne({ email, isVerified: true });
-   // 2️⃣ — Empêcher connexion si désactivé OU utilisateur inexistant/non vérifié
-   if (!user || user.active === false) {
-    return res.status(400).json({ message: "Compte désactivé ou non vérifié." });
-  }
+    // 2️⃣ — Empêcher connexion si désactivé OU utilisateur inexistant/non vérifié
+    if (!user || user.active === false) {
+      return res
+        .status(400)
+        .json({ message: "Compte désactivé ou non vérifié." });
+    }
     // Validation stricte (anti XSS / injections)
     if (!email || !emailRegex.test(email.trim())) {
       return res.status(400).json({ message: "Format d'email invalide." });
     }
     if (!password || password.length < 8) {
-      return res
-        .status(400)
-        .json({
-          message: "Le mot de passe doit contenir au moins 8 caractères.",
-        });
+      return res.status(400).json({
+        message: "Le mot de passe doit contenir au moins 8 caractères.",
+      });
     }
 
     const userc = await Userc.findOne({ email, isVerified: true });

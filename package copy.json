@@ -4,7 +4,7 @@
   "description": "Backend pour le projet AOD Avocat",
   "main": "serveur.js",
   "scripts": {
-    "start": "node serveur.js",
+    "start": "nodemon serveur.js",
     "dev": "nodemon serveur.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
