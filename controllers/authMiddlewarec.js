@@ -60,8 +60,12 @@ const logoutMiddleware = async (req, res) => {
   });*/}
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
-    sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
+    secure: process.env.NODE_ENV === "production",
+ 
+    //secure: false,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+
+    // sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
     maxAge: 60 * 60 * 1000 // 1 heure
   });
   
