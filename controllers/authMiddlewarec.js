@@ -53,10 +53,16 @@ const logoutMiddleware = async (req, res) => {
   const token = req.cookies.token;
 
   // Toujours clear côté navigateur, même si le back ne connaît pas le token
-  res.clearCookie("token", {
+ {/* res.clearCookie("token", {
     httpOnly: true,
     sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     secure: process.env.NODE_ENV === "production",
+  });*/}
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
+    sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
+    maxAge: 60 * 60 * 1000 // 1 heure
   });
   
 

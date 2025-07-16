@@ -5,8 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const logger = require("../logger/logger"); // Winston logger
 const Userc = require("../models/Userc");
-const path = require("path");
-const validator = require("validator"); // Ajoute ce require en haut du fichier
+ const validator = require("validator"); // Ajoute ce require en haut du fichier
 
 const nodemailer = require("nodemailer");
 // Configuration Nodemailer (à adapter si besoin)
@@ -306,23 +305,22 @@ const login = async (req, res) => {
       token: token,
       connectedAt: new Date(),
     });
-    {
-      /*  res.cookie("token", token, {
+   res.cookie("token", token, {
       httpOnly: true,
       secure: false,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
-      sameSite: "Lax",       // "Lax" suffit pour du local sur deux ports différents
+      sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
       maxAge: 60 * 60 * 1000 // 1 heure
-    });*/
-    }
-
+    });
+{/*
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 60 * 60 * 1000, // 1h
       // path: "/",            // Optionnel, mais utile si ton API n'est pas en racine
-    });
-
+    });*/}
+   
+    
     logger.info(`[LOGIN] Connexion réussie : ${email}, rôle : ${userc.role}`);
     res.status(200).json({
       user: {
@@ -462,12 +460,13 @@ const loginAfter2FA = async (req, res) => {
       { expiresIn: "5h" }
     );
 
-   { /*res.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 1000,
-    });*/}
+      secure: false,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
+      sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
+      maxAge: 60 * 60 * 1000 // 1 heure
+    });
+   { /*
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // <--
@@ -475,7 +474,7 @@ const loginAfter2FA = async (req, res) => {
       maxAge: 60 * 60 * 1000,
     });
     
-
+*/}
     logger.info(
       `[LOGIN2FA] Connexion réussie après double authentification : ${email}`
     );
