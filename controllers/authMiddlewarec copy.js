@@ -22,23 +22,19 @@ const checkBlacklistedToken = async (req, res, next) => {
   next();
 };
 
- 
 const authMiddlewarec = async (req, res, next) => {
   const token = req.cookies.token;
-  console.log("Cookies reçus : ", req.cookies);
   if (!token) {
     return res.status(401).json({ message: "Accès refusé. Token manquant." });
   }
-
-  // Check blacklist AVANT de décoder !
   const tokenInDb = await BlacklistedToken.findOne({ token });
   if (tokenInDb) {
     return res.status(401).json({ message: "Token black-listé (déconnecté)" });
   }
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded._id || decoded.id);
+    const userId = decoded._id || decoded.id;
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(401).json({ message: "Utilisateur introuvable." });
     }
@@ -48,6 +44,7 @@ const authMiddlewarec = async (req, res, next) => {
     return res.status(401).json({ message: "Token invalide ou expiré." });
   }
 };
+
 
 const logoutMiddleware = async (req, res) => {
   const token = req.cookies.token;

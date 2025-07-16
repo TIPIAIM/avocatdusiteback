@@ -28,7 +28,7 @@ const {
 const routeAuditLogger = require("../middleware/routeAuditLogger");
 const rateLimit = require("express-rate-limit");
 
-// ----- Limiteurs de rate -----
+// ----- Limiteurs de rate /admin/route-audit/bulk-delete -----
 const registerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 6, // Limite à 3 tentatives d'inscription par IP
@@ -67,6 +67,7 @@ router.post("/login-after-2fa", loginAfter2FA);
 
 router.use(authMiddlewarec); // Remplit req.user
 router.use(checkBlacklistedToken);
+
 router.use(routeAuditLogger); // Log toutes les routes (req.user.email dispo !)
 // MIDDLEWARES GLOBAUX (routes protégées ensuite)
 router.use(authMiddlewarec); // Authentifie l'utilisateur et remplit req.user
@@ -115,6 +116,11 @@ router.delete(
   adminSecurity.deleteConnectionLog
 );
 
+router.post(
+  "/admin/route-audit/bulk-delete",
+  isAdmin,
+  adminSecurity.deleteMultipleRouteAuditLogs
+);
 // UTILISATEUR standard (doit être connecté, mais pas admin)
 router.get("/users", getUsers);
 router.get("/users/:id", getUserById);

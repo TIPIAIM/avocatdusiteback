@@ -95,9 +95,7 @@ const register = async (req, res) => {
           </div>
 
             <h2 style="color:#2e44a1;font-size:1.33em;text-align:center;margin:0 0 14px 0;letter-spacing:0.05em;font-weight:800;">
-              Vérification sécurisée de votre identité ${
-                name ? " " + name : ""
-              },
+              Vérification sécurisée de votre identité ${name ? " " + name : ""},
             </h2>
             
             <p style="color:#4e5b79;margin:0 0 22px 0;">
@@ -306,22 +304,19 @@ const login = async (req, res) => {
       token: token,
       connectedAt: new Date(),
     });
-    {
-      /*  res.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secure: false,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
       sameSite: "Lax",       // "Lax" suffit pour du local sur deux ports différents
       maxAge: 60 * 60 * 1000 // 1 heure
-    });*/
-    }
-
-    res.cookie("token", token, {
+    });
+    
+   {/* res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      maxAge: 60 * 60 * 1000, // 1h
-      // path: "/",            // Optionnel, mais utile si ton API n'est pas en racine
-    });
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 5000,
+    });*/}
 
     logger.info(`[LOGIN] Connexion réussie : ${email}, rôle : ${userc.role}`);
     res.status(200).json({
@@ -462,19 +457,12 @@ const loginAfter2FA = async (req, res) => {
       { expiresIn: "5h" }
     );
 
-   { /*res.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
       maxAge: 60 * 60 * 1000,
-    });*/}
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // <--
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // <--
-      maxAge: 60 * 60 * 1000,
     });
-    
 
     logger.info(
       `[LOGIN2FA] Connexion réussie après double authentification : ${email}`

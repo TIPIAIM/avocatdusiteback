@@ -14,14 +14,11 @@ const port = process.env.Port || 2025; //port : Pour définir le port du serveur
    logger.info("Clé secrète chargée :", process.env.JWT_SECRET); 
 const allowedOrigins = [
   //Pour définir les domaines autorisés.
-   "http://localhost:5173", // Pour le développement local
-  FRONTEND, // Pour le développement local
+   "http://localhost:5173",
+  FRONTEND, 
 ]; //allowedOrigins : Pour définir les domaines autorisés.
 
-app.use(
-  //Middleware pour autoriser les requêtes entre domaines.
-  cors({
-    
+app.use(cors({  //Middleware pour autoriser les requêtes entre domaines.
     origin: allowedOrigins,
     credentials: true, // Si vous utilisez des cookies ou des sessions
      //credentials : Pour autoriser les cookies ou les sessions.
