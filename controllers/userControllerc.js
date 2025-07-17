@@ -307,11 +307,11 @@ const login = async (req, res) => {
     });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite:  "None",
-      maxAge: 60 * 60 * 1000,
+      secure: true,
+      sameSite: "None",
+      maxAge: 60 * 60 * 1000
     });
-
+    
     {
       /*
     res.cookie("token", token, {
@@ -472,14 +472,13 @@ const loginAfter2FA = async (req, res) => {
       
 */
     }
-
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite:  "None",
-      maxAge: 60 * 60 * 1000,
+      secure: true,
+      sameSite: "None",
+      maxAge: 60 * 60 * 1000
     });
-
+    
     logger.info(
       `[LOGIN2FA] Connexion réussie après double authentification : ${email}`
     );
