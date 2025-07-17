@@ -14,7 +14,9 @@ const deleteRouteAuditLog = async (req, res) => {
   try {
     const deleted = await RouteAuditLog.findByIdAndDelete(req.params.id);
     if (!deleted) {
-      return res.status(404).json({ success: false, message: "Audit introuvable." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Audit introuvable." });
     }
     res.json({ success: true, message: "Audit supprimé." });
   } catch (err) {
@@ -22,14 +24,15 @@ const deleteRouteAuditLog = async (req, res) => {
   }
 };
 
-
 const getAllConnections = async (req, res) => {
   const logs = await ConnectionLog.find({ action: "login" }).sort({ time: -1 });
   res.json(logs);
 };
 // Toutes les déconnexions
 const getAllDisconnections = async (req, res) => {
-  const logs = await ConnectionLog.find({ action: "logout" }).sort({ time: -1 });
+  const logs = await ConnectionLog.find({ action: "logout" }).sort({
+    time: -1,
+  });
   res.json(logs);
 };
 // Tous les tokens blacklistés
@@ -39,7 +42,9 @@ const getAllBlacklistedTokens = async (req, res) => {
 };
 // Toutes les sessions (actives/inactives)
 const getAllSessions = async (req, res) => {
-  const sessions = await Session.find().populate("userId", "email name").sort({ connectedAt: -1 });
+  const sessions = await Session.find()
+    .populate("userId", "email name")
+    .sort({ connectedAt: -1 });
   res.json(sessions);
 };
 // Liste utilisateurs (pour désactiver/réactiver)
@@ -51,7 +56,10 @@ const toggleUserActive = async (req, res) => {
   const { id } = req.params;
   const { active } = req.body;
   await Userc.findByIdAndUpdate(id, { active: !!active });
-  res.json({ success: true, message: `Utilisateur ${active ? "activé" : "désactivé"}` });
+  res.json({
+    success: true,
+    message: `Utilisateur ${active ? "activé" : "désactivé"}`,
+  });
 };
 // Supprimer (désactiver) un token blacklisté
 
@@ -60,7 +68,9 @@ const deleteBlacklistedToken = async (req, res) => {
     const { id } = req.params;
     const deleted = await BlacklistedToken.findByIdAndDelete(id);
     if (!deleted) {
-      return res.status(404).json({ success: false, message: "Token introuvable." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Token introuvable." });
     }
     res.json({ success: true, message: "Token supprimé." });
   } catch (err) {
@@ -74,7 +84,9 @@ const deleteConnectionLog = async (req, res) => {
     const { id } = req.params;
     const deleted = await ConnectionLog.findByIdAndDelete(id);
     if (!deleted) {
-      return res.status(404).json({ success: false, message: "Log introuvable." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Log introuvable." });
     }
     res.json({ success: true, message: "Log supprimé." });
   } catch (err) {
@@ -82,40 +94,28 @@ const deleteConnectionLog = async (req, res) => {
   }
 };
 
- // Suppression groupée des logs d’audit
-{/*const deleteMultipleRouteAuditLogs = async (req, res) => {
-  try {
-    const { ids } = req.body;
-    if (!Array.isArray(ids) || !ids.length) {
-      return res.status(400).json({ success: false, message: "Aucun ID fourni" });
-    }
-    const result = await RouteAuditLog.deleteMany({ _id: { $in: ids } });
-    res.json({ success: true, message: `${result.deletedCount} logs supprimés.` });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Erreur serveur." });
-  }
-};*/}
 const deleteMultipleRouteAuditLogs = async (req, res) => {
   try {
     const { ids } = req.body;
     if (!Array.isArray(ids) || !ids.length) {
-      return res.status(400).json({ success: false, message: "Aucun ID fourni" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Aucun ID fourni" });
     }
     const result = await RouteAuditLog.deleteMany({ _id: { $in: ids } });
-    res.json({ success: true, message: `${result.deletedCount} logs supprimés.` });
+    res.json({
+      success: true,
+      message: `${result.deletedCount} logs supprimés.`,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: "Erreur serveur." });
   }
 };
 
-
-
 module.exports = {
   getAllRouteAudits,
   deleteRouteAuditLog,
-   deleteMultipleRouteAuditLogs,
-
-  
+  deleteMultipleRouteAuditLogs,
 
   getAllConnections,
   getAllDisconnections,

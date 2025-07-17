@@ -309,11 +309,9 @@ const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-     
-     //  secure: true,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
-  // sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
-      maxAge: 60 * 60 * 1000, // 1 heure
+      maxAge: 60 * 60 * 1000,
     });
+
     {
       /*
     res.cookie("token", token, {
@@ -463,7 +461,7 @@ const loginAfter2FA = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "5h" }
     );
-  {
+    {
       /*
     res.cookie("token", token, {
       httpOnly: true,
@@ -472,11 +470,13 @@ const loginAfter2FA = async (req, res) => {
       maxAge: 60 * 60 * 1000, // 1 heure
     });
       
-*/}
+*/
+    }
+
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // <--
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // <--
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 60 * 60 * 1000,
     });
 
