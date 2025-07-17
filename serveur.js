@@ -12,14 +12,16 @@ const app = express(); //app : Pour créer une application Express.
 const port = process.env.Port || 2025; //port : Pour définir le port du serveur.
 (FRONTEND = process.env.FRONTEND), // Pour le développement local
    logger.info("Clé secrète chargée :", process.env.JWT_SECRET); 
-const allowedOrigins = [
+//const allowedOrigins = [
   //Pour définir les domaines autorisés.
-   "http://localhost:5173",
-  FRONTEND, 
-]; //allowedOrigins : Pour définir les domaines autorisés.
+ //  "https://aod-avocats.com",
+  //FRONTEND, 
+//]; //allowedOrigins : Pour définir les domaines autorisés.
+
 
 app.use(cors({  //Middleware pour autoriser les requêtes entre domaines.
-    origin: allowedOrigins,
+   // origin: allowedOrigins,
+    origin:"https://aod-avocats.com",
     credentials: true, // Si vous utilisez des cookies ou des sessions
      //credentials : Pour autoriser les cookies ou les sessions.
     methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes HTTP acceptées

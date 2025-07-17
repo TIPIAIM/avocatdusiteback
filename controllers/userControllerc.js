@@ -307,12 +307,11 @@ const login = async (req, res) => {
     });
     res.cookie("token", token, {
       httpOnly: true,
-
-    //  secure: process.env.NODE_ENV === "production",
-     // sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-
-       secure: true,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
-       sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+     
+     //  secure: true,         // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
+  // sameSite: "None",       // "Lax" suffit pour du local sur deux ports différents
       maxAge: 60 * 60 * 1000, // 1 heure
     });
     {
@@ -464,24 +463,23 @@ const loginAfter2FA = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "5h" }
     );
-
+  {
+      /*
     res.cookie("token", token, {
       httpOnly: true,
       secure: false, // IMPORTANT: false en local ! true SEULEMENT en HTTPS production
       sameSite: "None", // "Lax" suffit pour du local sur deux ports différents
       maxAge: 60 * 60 * 1000, // 1 heure
     });
-    {
-      /*
+      
+*/}
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // <--
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // <--
       maxAge: 60 * 60 * 1000,
     });
-    
-*/
-    }
+
     logger.info(
       `[LOGIN2FA] Connexion réussie après double authentification : ${email}`
     );
